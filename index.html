@@ -1,0 +1,45 @@
+<!-- VIDEO BUTTONS -->
+<button class="item-color"
+        style="--color:#fb923c"
+        onclick="showIframe('https://www.youtube.com/embed/7_SX4pTr3gk')">
+  ▶ Lesson 1
+</button>
+
+<button class="item-color"
+        style="--color:#fb923c"
+        onclick="showIframe('https://www.youtube.com/embed/DlBUuWBfnTs')">
+  ▶ Lesson 2
+</button>
+
+<button class="item-color"
+        style="--color:#fb923c"
+        onclick="showIframe('https://www.youtube.com/embed/lRWdlh6MFHM')">
+  ▶ Lesson 3
+</button>
+
+<!-- VIDEO IFRAME -->
+<iframe id="lessonIframe"
+        style="
+            width:100%;
+            height:90%;
+            border:none;
+            overflow-x:hidden;
+            overflow-y:auto;
+            display:none;
+        "
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+</iframe>
+<script>
+function showIframe(videoUrl) {
+    const iframe = document.getElementById("lessonIframe");
+
+    // Ensure autoplay is always added
+    if (!videoUrl.includes("autoplay")) {
+        videoUrl += (videoUrl.includes("?") ? "&" : "?") + "autoplay=1";
+    }
+
+    iframe.src = videoUrl;
+    iframe.style.display = "block";
+}
+</script>
