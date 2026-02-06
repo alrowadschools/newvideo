@@ -1,45 +1,2902 @@
-<!-- VIDEO BUTTONS -->
-<button class="item-color"
-        style="--color:#fb923c"
-        onclick="showIframe('https://www.youtube.com/embed/7_SX4pTr3gk')">
-  ▶ Lesson 1
-</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.10.0/dist/pptxgen.bundle.js"></script>
+    <script src="https://unpkg.com/mammoth@1.4.8/mammoth.browser.min.js"></script>
+    <link rel="stylesheet" href="APCSP PDF WEEK FILES/SCRIPTS/weekstyles.css">
+    <title>PPT EXTRACTOR - WEEK 1</title>
+    <style>
+        /* Add styles for definition modal in slides */
+        .slide-definition-modal {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 500px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+            overflow: hidden;
+        }
+        
+        .slide-definition-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .slide-definition-content {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .slide-definition-footer {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            text-align: right;
+            border-top: 1px solid #eee;
+        }
+        
+        .keyword-highlight {
+            color: #667eea;
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: background-color 0.2s;
+        }
+        
+        .keyword-highlight:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .related-term-tag {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-block;
+            margin: 2px;
+            transition: background-color 0.2s;
+        }
+        
+        .related-term-tag:hover {
+            background: #5569c4;
+        }
+    </style>
+</head>
+<body>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.worker.min.js"></script>
+    <script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
 
-<button class="item-color"
-        style="--color:#fb923c"
-        onclick="showIframe('https://www.youtube.com/embed/DlBUuWBfnTs')">
-  ▶ Lesson 2
-</button>
+    <!-- Modal for extracted content -->
+    <div class="modal" id="extracted-content-modal">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-pages-container" id="modal-pages-container">
+                    <!-- Pages will be inserted here -->
+                </div>
+            </div>
+            <div class="modal-nav" style="position: relative; display: flex; align-items: center;">
+                <!-- Left group -->
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="modal-nav-btn" id="modal-prev-btn" onclick="prevModalPage()">◀️</button>
+                    <div class="modal-page-info" id="modal-page-info">SLIDE 1 of 1</div>
+                    
+                    <!-- Bottom Navigation Bar -->
+                    <div class="container-items" style="margin-bottom: 0px;height:0px;">
+                        <button class="item-color" style="--color: #facc15" aria-color="📚WK-1:Visual" onclick="showIframe('https://dannyvanpoucke.be/wp-content/uploads/2020/12/surface_Sinc2D_25_Ens.gif')"></button>
+                        <button class="item-color" style="--color: #e11d48" aria-color="📚WK-1:WHITE BOARD" onclick="showIframe('https://wbo.ophir.dev/boards/anonymous')"></button>
+                        <button class="item-color" style="--color: #facc15" aria-color="📚WK-1:Lesson Video" onclick="showIframe('https://www.youtube.com/embed/7_SX4pTr3gk')"></button>
+                        <button class="item-color" style="--color: #f472b6" aria-color="WK-1📚JOIN MY QUIZZ" onclick="showIframe('https://wayground.com/join?gc=52065078&source=liveDashboard')"></button>
+                        <button class="item-color" style="--color: #84cc16" aria-color="WK-1:📚Practice Test" onclick="openTest()"></button>
+                    </div>
+                </div>
 
-<button class="item-color"
-        style="--color:#fb923c"
-        onclick="showIframe('https://www.youtube.com/embed/lRWdlh6MFHM')">
-  ▶ Lesson 3
-</button>
+                <!-- Close button (slightly left of center) -->
+                <button class="modal-close" onclick="closeModal()" style="position: absolute; left: 90%;transform: translateX(-65%);background:red;">✖️</button>
 
-<!-- VIDEO IFRAME -->
-<iframe id="lessonIframe"
-        style="
-            width:100%;
-            height:90%;
-            border:none;
-            overflow-x:hidden;
-            overflow-y:auto;
-            display:none;
-        "
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen>
-</iframe>
+                <!-- Right button -->
+                <button class="modal-nav-btn" id="modal-next-btn" onclick="nextModalPage()">▶️</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Week Loading Button -->
+        <div class="action-buttons">
+            <!-- Input box (hidden) -->
+            <input type="text" id="WeekNoInput" placeholder="Enter Week No" style="margin-bottom: 8px; width: 100px; padding: 4px;display:none;">
+            
+            <!-- Week 1 Load Button -->
+            <button class="btn-drive" onclick="loadWeekPDF(1)"style="display:none;">WEEK 1</button>
+        </div>
+
+              <!-- Upload and General Extract Button -->
+        <div class="action-buttons">
+            <button class="btn-drive" onclick="loadPCPDF()">
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M4 6l8.5 12H15L6.5 6H4m2.5 0L13 12h5.5L12 2 6.5 6M18.5 6H22l-8.5 12h3L18.5 6z"/>
+                </svg>
+                UPLOAD📁
+            </button>
+            
+            <button class="btn-view-extracted" id="general-extract-btn" onclick="extractGeneralPDF()">
+                EXTRACT
+            </button>
+        </div>
+        
+
+        <!-- PDF Viewer -->
+        <div class="pdf-viewer-container" id="pdf-viewer-container" style="display:none;">
+            <div class="viewer-header" style="display:none;">
+                <div class="viewer-title" style="display:none;">
+                    <div class="extraction-status" id="extraction-status">
+                        <div class="status-content">
+                            <div class="status-spinner"></div>
+                            <div class="status-text" id="status-text">Extracting content...</div>
+                            <div class="status-progress">
+                                <div class="status-bar" id="status-bar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="viewer-controls">
+                    <div class="zoom-controls">
+                        <button class="zoom-btn" onclick="zoomOut()">-</button>
+                        <span class="zoom-level" id="zoom-level">100%</span>
+                        <button class="zoom-btn" onclick="zoomIn()">+</button>
+                    </div>
+                    <button class="btn-viewer" onclick="prevPage()">
+                        <svg width="16" height="16" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"/>
+                        </svg>
+                        Prev
+                    </button>
+                    <span>Page: <input type="number" id="current-page" class="page-input" min="1" value="1" onchange="goToPage(this.value)"></span>
+                    <span id="total-pages">/ 1</span>
+                    <button class="btn-viewer" onclick="nextPage()">
+                        Next
+                        <svg width="16" height="16" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
+                        </svg>
+                    </button>
+                    <button class="btn-viewer" onclick="closeViewer()">
+                        <svg width="16" height="16" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+                        </svg>
+                        Close
+                    </button>
+                </div>
+            </div>
+            <div class="pdf-js-viewer-container" style="display:none;">
+                <div id="pdf-canvas-container" style="display:none;"></div>
+            </div>
+        </div>
+
+        <!-- Drop zone -->
+        <div class="drop-zone" id="drop-zone" style="display:none;">
+            <div class="drop-zone-icon">📁</div>
+            <div class="drop-zone-text">Drop your PDF here or click to browse</div>
+            <div class="drop-zone-hint">Supports PDF files up to 50MB</div>
+            <input type="file" id="file-input" accept=".pdf,application/pdf">
+        </div>
+
+        <!-- Week 1 Extract Button -->
+        <div class="action-buttons">
+            <button class="btn-view-extracted"style="display:none;" id="extract-week-1-btn" onclick="extractWeek(1)" disabled>Extract Week 1</button>
+        </div>
+
+        <div class="stats-bar" id="stats-bar" style="display: none;">
+            <div class="stat-item" style="display: none;">
+                <div class="stat-value" id="stat-pages" style="display: none;">0</div>
+                <div class="stat-label" style="display:none;">Pages</div>
+            </div>
+            <div class="stat-item" style="display: none;">
+                <div class="stat-value" id="stat-text" style="display: none;">0</div>
+                <div class="stat-label" style="display:none;">Text Blocks</div>
+            </div>
+            <div class="stat-item" style="display: none;">
+                <div class="stat-value" id="stat-images" style="display: none;">0</div>
+                <div class="stat-label" style="display:none;">Images</div>
+            </div>
+        </div>
+
+        <div id="content-container" style="display:none;"></div>
+    </div>
+    
+<div class="container">
+       
+        
+        <div class="subject-filter"style="display:none;">
+            <div class="subject-selector">
+                <button class="subject-btn active" onclick="setSubject('cs')" data-subject="cs">
+                    💻 Computer Science
+                </button>
+                <button class="subject-btn" onclick="setSubject('general')" data-subject="general">
+                    📚 General
+                </button>
+                <button class="subject-btn" onclick="setSubject('biology')" data-subject="biology">
+                    🧬 Biology
+                </button>
+                <button class="subject-btn" onclick="setSubject('physics')" data-subject="physics">
+                    ⚛️ Physics
+                </button>
+            </div>
+            <p style="margin-top: 10px; color: #666; font-size: 14px;">
+                Currently selected: <span id="currentSubject" style="font-weight: bold; color: #3498db;">Computer Science</span>
+            </p>
+        </div>
+        
+        <div class="input-section">
+         
+            <div id="QuizGeneratorCleanContent"style="height:300px;overflow-y:auto;">
+                <p class="placeholder">Quiz source...</p>
+            </div>
+            <!-- Contenteditable div for rich text input -->
+            <div id="richTextInput"style="display:none;" contenteditable="true" placeholder="Paste your computer science paragraph here with bold keywords..."></div>
+            
+            <div class="formatting-controls"style="display:none;">
+                <button class="format-btn" onclick="makeBold()">B <strong>Bold</strong></button>
+                <button class="format-btn" onclick="removeFormatting()">Clear Formatting</button>
+                <button class="format-btn" onclick="pasteExample()">Load CS Example</button>
+            </div>
+        </div>
+
+        <div class="contents-section">
+            <h2>Document Contents</h2>
+            
+            <div class="file-upload-container">
+                <button class="action-btn file-btn" onclick="loadDefaultDocx()">
+                    📄 Autoload WEEK 2.docx
+                </button>
+                
+                <div class="file-input-wrapper">
+                    <button class="file-label">
+                        📤 Upload DOCX File
+                        <input type="file" id="fileUpload" accept=".docx,.doc" onchange="handleFileUpload(this.files)">
+                    </button>
+                </div>
+                
+                <div class="current-file" id="currentFile">
+                    No file loaded
+                </div>
+            </div>
+            
+            <!-- Editable div for all contents -->
+            <div id="allContents"style="display:none;" contenteditable="true" placeholder="Document contents will appear here..."></div>
+            
+            <div class="button-container">
+                <button class="action-btn process-btn" onclick="extractKeywordsFromContents()">
+                    🔍 Extract & Process Keywords from Document
+                </button>
+                <button class="action-btn fetch-all-btn" onclick="fetchAllDefinitions()" id="fetchAllBtn" disabled>
+                    📚 Fetch All Definitions
+                </button>
+            </div>
+            
+            
+            
+            <!-- Progress container for fetching all definitions -->
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">Fetching definitions... 0/0</div>
+            </div>
+        </div>
+        
+        <div class="output-section"style="display:none;">
+            
+            <div id="processedParagraph">
+                <p class="placeholder">Processed paragraph will appear here...</p>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="keywordCount">0</div>
+                    <div class="stat-label">Keywords Found</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="wordCount">0</div>
+                    <div class="stat-label">Total Words</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="charCount">0</div>
+                    <div class="stat-label">Characters</div>
+                </div>
+            </div>
+            
+            <!-- Definitions Summary Container -->
+            <div class="definitions-summary" id="definitionsSummary">
+                <h3>
+                    <span id="summaryTitle">📋 Computer Science Definitions Found</span>
+                    <button class="close-btn" onclick="closeDefinitionsSummary()" style="background: #e74c3c; color: white; font-size: 14px; padding: 5px 10px; border-radius: 15px;">Close</button>
+                </h3>
+                <div class="definitions-list" id="definitionsList">
+                    <!-- Definitions will be inserted here -->
+                </div>
+                <div id="definitionsStats"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Overlay for modal -->
+    <div class="overlay" onclick="closeDefinition()"></div>
+    
+    <!-- Definition Window -->
+    <div class="definition-window" id="definitionWindow">
+        <div class="definition-header"style="background:white;">
+            <h3 id="definitionTitle">Definition</h3>
+            <button class="close-btn" onclick="closeDefinition()">×</button>
+        </div>
+        <div class="definition-content" id="definitionContent">
+            <div class="loading" id="loadingIndicator">
+                <div class="loading-spinner"></div>
+                <p>Fetching definition...</p>
+            </div>
+            <div id="definitionData" style="display: none;">
+                <div class="definition-text-full" id="definitionText"></div>
+                <div class="synonyms" id="synonymsSection">
+                    <h4>Synonyms</h4>
+                    <div class="synonyms-list" id="synonymsList"></div>
+                </div>
+            </div>
+            <div class="error" id="errorMessage" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script src="https://unpkg.com/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    
+    <script>
+// ============================================
+// GLOBAL STATE
+// ============================================
+
+let extractedContent = [];
+let extractedHeadings = {};
+let modalCurrentPage = 1;
+let modalTotalPages = 0;
+let keywords = [];
+let definitionsCache = {};
+
+// ============================================
+// INITIALIZATION
+// ============================================
+
+function initializeApp() {
+    console.log('App initialized');
+    setupEventListeners();
+}
+
+function setupEventListeners() {
+    // Add click handler for Extract button
+    const extractBtn = document.querySelector('.btn-view-extracted');
+    if (extractBtn) {
+        extractBtn.addEventListener('click', extractGeneralPDF);
+    }
+    
+    // Keyboard shortcuts for modal
+    document.addEventListener('keydown', (e) => {
+        const modal = document.getElementById('extracted-content-modal');
+        if (modal && modal.classList.contains('active')) {
+            if (e.key === 'ArrowLeft') prevModalPage();
+            else if (e.key === 'ArrowRight') nextModalPage();
+            else if (e.key === 'Escape') closeModal();
+        }
+    });
+}
+
+// ============================================
+// MAIN EXTRACTION FUNCTION
+// ============================================
+
+function extractGeneralPDF() {
+    console.log('Extract button clicked!');
+    
+    // Extract content
+    const success = extractContentFromProcessedParagraph();
+    
+    if (!success) {
+        alert('No content found in the processed paragraph. Please add some content first.');
+        return;
+    }
+    
+    console.log('Content extracted, opening modal...');
+    openModal();
+}
+
+// ============================================
+// CONTENT EXTRACTION
+// ============================================
+
+function extractContentFromProcessedParagraph() {
+    console.log('Starting content extraction...');
+    
+    // Clear previous content
+    extractedContent = [];
+    extractedHeadings = {};
+    
+    // Get the processed paragraph div
+    const processedDiv = document.getElementById('processedParagraph');
+    if (!processedDiv) {
+        console.error('Cannot find processedParagraph div');
+        return false;
+    }
+    
+    // Get the HTML content
+    const html = processedDiv.innerHTML;
+    console.log('Original HTML:', html.substring(0, 200) + '...');
+    
+    // Check if there's actual content
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    
+    // Remove placeholder if exists
+    const placeholder = tempDiv.querySelector('.placeholder');
+    if (placeholder) placeholder.remove();
+    
+    const cleanHtml = tempDiv.innerHTML.trim();
+    if (cleanHtml.length === 0) {
+        console.log('No content found in processedParagraph');
+        return false;
+    }
+    
+    // Split content by headings
+    const slides = splitIntoSlides(tempDiv);
+    
+    console.log(`Created ${slides.length} slides`);
+    
+    // Convert slides to extractedContent format
+    let globalOrder = 0;
+    slides.forEach((slide, index) => {
+        const pageNum = index + 1;
+        
+        // Store heading
+        extractedHeadings[pageNum] = slide.heading;
+        
+        // Add text content
+        if (slide.text.trim().length > 0) {
+            extractedContent.push({
+                id: `text-${pageNum}-${globalOrder}`,
+                type: 'text',
+                content: slide.text,
+                htmlContent: slide.html,
+                pageNumber: pageNum,
+                globalOrder: globalOrder++,
+                isEditing: false
+            });
+        }
+        
+        // Add images
+        slide.images.forEach((image, imgIndex) => {
+            extractedContent.push({
+                id: `image-${pageNum}-${globalOrder}`,
+                type: 'image',
+                content: image.src,
+                pageNumber: pageNum,
+                globalOrder: globalOrder++,
+                width: 400,
+                height: 300,
+                qrData: null,
+                alt: image.alt || 'Image'
+            });
+        });
+    });
+    
+    return extractedContent.length > 0;
+}
+
+function splitIntoSlides(container) {
+    const slides = [];
+    let currentSlide = null;
+    
+    // Get all direct child nodes
+    const nodes = Array.from(container.childNodes);
+    console.log(`Processing ${nodes.length} nodes`);
+    
+    for (const node of nodes) {
+        // Skip empty text nodes
+        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length === 0) {
+            continue;
+        }
+        
+        // Check if this starts a new slide
+        const isNewSlide = isSlideStart(node);
+        
+        if (isNewSlide) {
+            // Save previous slide if exists
+            if (currentSlide) {
+                slides.push(currentSlide);
+            }
+            
+            // Create new slide
+            const heading = extractHeading(node);
+            currentSlide = {
+                heading: heading,
+                text: '',
+                html: '',
+                images: []
+            };
+            
+            // Add heading content
+            addNodeToSlide(node, currentSlide, true);
+            
+        } else if (currentSlide) {
+            // Add to current slide
+            addNodeToSlide(node, currentSlide, false);
+        } else {
+            // Create first slide if none exists
+            currentSlide = {
+                heading: 'Slide 1',
+                text: '',
+                html: '',
+                images: []
+            };
+            addNodeToSlide(node, currentSlide, false);
+        }
+    }
+    
+    // Add the last slide
+    if (currentSlide) {
+        slides.push(currentSlide);
+    }
+    
+    // If no slides were created, create one with all content
+    if (slides.length === 0) {
+        const text = container.textContent || '';
+        const html = container.innerHTML || '';
+        const images = [];
+        
+        // Extract images
+        const imgElements = container.querySelectorAll('img');
+        imgElements.forEach(img => {
+            images.push({
+                src: img.src,
+                alt: img.alt || 'Image'
+            });
+        });
+        
+        slides.push({
+            heading: 'Content',
+            text: text,
+            html: html,
+            images: images
+        });
+    }
+    
+    return slides;
+}
+
+function isSlideStart(node) {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+        // Check for heading tags
+        if (node.tagName.match(/^H[1-6]$/i)) {
+            return true;
+        }
+        
+        // Check for bold/strong that could be headings
+        if ((node.tagName === 'STRONG' || node.tagName === 'B') && 
+            (node.textContent || '').trim().length < 100) {
+            return true;
+        }
+        
+        // Check for text starting with #
+        const text = (node.textContent || '').trim();
+        if (text.startsWith('#') && text.length > 2) {
+            return true;
+        }
+    } else if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.textContent.trim();
+        return text.startsWith('#') && text.length > 2;
+    }
+    
+    return false;
+}
+
+function extractHeading(node) {
+    let text = '';
+    
+    if (node.nodeType === Node.ELEMENT_NODE) {
+        text = node.textContent || '';
+    } else if (node.nodeType === Node.TEXT_NODE) {
+        text = node.textContent || '';
+    }
+    
+    // Remove # symbol and trim
+    text = text.replace(/^#+\s*/, '').trim();
+    
+    // If empty, use default
+    if (!text) text = `Slide`;
+    
+    return text;
+}
+
+function addNodeToSlide(node, slide, isHeading) {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+        // Clone the node
+        const clone = node.cloneNode(true);
+        
+        // Extract images
+        const images = clone.querySelectorAll('img');
+        images.forEach(img => {
+            slide.images.push({
+                src: img.src,
+                alt: img.alt || 'Image'
+            });
+            img.remove();
+        });
+        
+        // If element itself is an image
+        if (clone.tagName === 'IMG') {
+            slide.images.push({
+                src: clone.src,
+                alt: clone.alt || 'Image'
+            });
+            return;
+        }
+        
+        // For headings, remove # symbol
+        if (isHeading) {
+            const text = clone.textContent || '';
+            if (text.includes('#')) {
+                clone.textContent = text.replace(/^#+\s*/, '').trim();
+            }
+        }
+        
+        // Add to slide
+        slide.html += clone.outerHTML;
+        slide.text += (clone.textContent || '') + ' ';
+        
+    } else if (node.nodeType === Node.TEXT_NODE) {
+        let text = node.textContent || '';
+        
+        // For heading text, remove # symbol
+        if (isHeading) {
+            text = text.replace(/^#+\s*/, '').trim();
+        }
+        
+        if (text.trim().length > 0) {
+            slide.html += text;
+            slide.text += text + ' ';
+        }
+    }
+}
+
+// ============================================
+// MODAL FUNCTIONS WITH DEFINITION INTEGRATION
+// ============================================
+
+function openModal() {
+    console.log('openModal called');
+    console.log('Content to display:', extractedContent.length, 'items');
+    
+    if (extractedContent.length === 0) {
+        alert('No content to display. Extraction failed.');
+        return;
+    }
+    
+    // Get modal elements
+    const modal = document.getElementById('extracted-content-modal');
+    const modalPagesContainer = document.getElementById('modal-pages-container');
+    
+    if (!modal || !modalPagesContainer) {
+        console.error('Modal elements not found');
+        alert('Modal HTML elements not found on page');
+        return;
+    }
+    
+    // Clear previous content
+    modalPagesContainer.innerHTML = '';
+    
+    // Group content by page
+    const pages = {};
+    extractedContent.forEach(item => {
+        if (!pages[item.pageNumber]) {
+            pages[item.pageNumber] = {
+                textBlocks: [],
+                images: []
+            };
+        }
+        
+        if (item.type === 'text') {
+            pages[item.pageNumber].textBlocks.push(item);
+        } else if (item.type === 'image') {
+            pages[item.pageNumber].images.push(item);
+        }
+    });
+    
+    modalTotalPages = Object.keys(pages).length;
+    console.log(`Creating ${modalTotalPages} modal pages`);
+    
+    // Create pages
+    Object.keys(pages).sort((a, b) => a - b).forEach(pageNum => {
+        const pageDiv = document.createElement('div');
+        pageDiv.className = 'modal-page';
+        pageDiv.style.width = '100%';
+        pageDiv.style.flexShrink = '0';
+        pageDiv.innerHTML = createModalPageHTML(pageNum, pages[pageNum]);
+        modalPagesContainer.appendChild(pageDiv);
+    });
+    
+    // Reset to first page
+    modalCurrentPage = 1;
+    updateModalPosition();
+    updateModalNav();
+    
+    // Show the modal
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    console.log('Modal should now be visible!');
+}
+
+function createModalPageHTML(pageNum, pageData) {
+    const pageHeading = extractedHeadings[pageNum] || `Slide ${pageNum}`;
+    
+    // Create text column HTML
+    let textColumnHTML = '';
+    if (pageData.textBlocks.length > 0) {
+        const textBlock = pageData.textBlocks[0];
+        textColumnHTML = createTextBlockHTML(textBlock, pageNum, pageHeading);
+    }
+    
+    // Create image column HTML with definition modal
+    let imageColumnHTML = '';
+    pageData.images.forEach((item, index) => {
+        imageColumnHTML += createImageBlockHTML(item, index, pageNum, pageHeading);
+    });
+    
+    // Add definition modal to image column
+    imageColumnHTML += createDefinitionModalHTML(pageNum);
+    
+    return `
+        <div class="page-container" style="margin: 0;">
+            <div class="two-column-layout" style="display: flex; gap: 20px;">
+                <div class="text-column" style="flex: 1;">
+                    ${textColumnHTML}
+                </div>
+                <div class="image-column" style="flex: 1; position: relative;">
+                    ${imageColumnHTML}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function createTextBlockHTML(item, pageNum, pageHeading) {
+    let contentHtml = item.htmlContent || escapeHtml(item.content);
+    
+    // Process clickable keywords in the content
+    contentHtml = contentHtml.replace(
+        /<span class="clickable-keyword"[^>]*>([^<]+)<\/span>/g,
+        (match, keyword) => {
+            return `<span class="keyword-highlight" 
+                      onclick="showSlideDefinition(${pageNum}, '${escapeHtml(keyword)}')"
+                      title="Click to view definition">
+                ${keyword}
+            </span>`;
+        }
+    );
+    
+    // Also process bold text that might be keywords
+    contentHtml = contentHtml.replace(
+        /<strong>([^<]+)<\/strong>|<b>([^<]+)<\/b>/g,
+        (match, strongContent, bContent) => {
+            const keyword = strongContent || bContent;
+            return `<span class="keyword-highlight" 
+                      onclick="showSlideDefinition(${pageNum}, '${escapeHtml(keyword)}')"
+                      title="Click to view definition">
+                ${keyword}
+            </span>`;
+        }
+    );
+    
+    return `
+        <div class="text-block">
+            <!-- TOP ROW WITH ALL BUTTONS -->
+            <div style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom:0px;
+                gap:10px;
+                flex-wrap: wrap;
+                background: rgba(168, 85, 247, 0.18);
+                border-radius: 0px;
+                padding: 10px;
+                border-right:6px solid white;
+            ">
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <span class="block-badge badge-text" style="
+                        background: #a855f7;
+                        color: white;
+                        padding: 6px 12px;
+                        border-radius: 6px;
+                        font-weight: bold;
+                        font-size: 14px;
+                        display:none;
+                    ">📝 Text</span>
+                    <!-- UPLOAD and EXTRACT buttons -->
+                    <button class="btn-drive" onclick="loadPCPDF()" title="Upload PDF" style="
+                        background: white;
+                        color: white;
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        font-weight: bold;
+                        font-size: 22px;
+                        cursor: pointer;
+                        border: 1px solid rgba(168, 85, 247, 0.18);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 0;
+                    ">
+                        📁
+                    </button>
+                    <button class="btn-view-extracted" 
+                            id="modal-general-extract-btn" 
+                            onclick="extractGeneralPDF()" 
+                            title="Extract PDF" 
+                            style="
+                                background: white;
+                                width: 40px;
+                                height: 40px;
+                                border-radius: 50%;
+                                font-weight: bold;
+                                cursor: pointer;
+                                border: 1px solid rgba(168, 85, 247, 0.18);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                padding: 0;
+                                font-size: 22px;
+                            ">
+                        <span style="color: orange; font-size: 22px; line-height: 1;">📚</span>
+                    </button>
+                </div>
+                <div style="
+                    font-family: 'Times New Roman', Times, serif;
+                    font-size: 26px;
+                    font-weight: bold;
+                    color: #2c3e50;
+                    text-align: center;
+                    flex: 1;
+                    min-width: 200px;
+                    cursor:pointer;
+                ">
+                    ${escapeHtml(pageHeading)}
+                </div>
+                <div class="block-actions" style="white-space: nowrap;">
+                    <button class="btn btn-edit"
+                            onclick="openNotesModal(${pageNum})"
+                            title="Notes" 
+                            style="
+                                background: white;
+                                width: 40px;
+                                height: 40px;
+                                border-radius: 50%;
+                                cursor: pointer;
+                                border: 1px solid rgba(168, 85, 247, 0.18);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                padding: 0;
+                                font-size: 22px;
+                                line-height: 1;
+                            ">
+                        🧮
+                    </button>
+                </div>
+            </div>
+            
+            <!-- CONTENT AREA -->
+            <div class="text-content">
+                <div style="
+                    font-family: 'Times New Roman', Times, serif;
+                    font-size: 20px;
+                    line-height: 1.6;
+                    color: #333;
+                    padding: 15px;
+                    background: white;
+                    border-radius: 8px;
+                    text-align: justify;
+                    text-justify: inter-word;
+                    overflow-wrap: break-word;
+                    hyphens: auto;
+                    border-left: 4px solid #a855f7;
+                    margin: 0px 0;
+                    max-height: 500px;
+                    overflow-y: auto;
+                ">
+                    ${contentHtml}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function createImageBlockHTML(item, index, pageNum, pageHeading) {
+    const iframeWrapperId = `iframe-wrapper-${pageNum}`;
+    const iframeId = `SlideIframe-${pageNum}`;
+    const imageId = `SlideImage-${pageNum}`;
+    
+    return `
+        <div class="image-block" style="position: relative;">
+            <!-- TOP ROW WITH DOWNLOAD BUTTON -->
+            <div style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 0px;
+                gap: 0px;
+                flex-wrap: wrap;
+                background: rgba(168, 85, 247, 0.18);
+                border-radius: 0px;
+                padding:10px;
+                border-left:6px solid white;
+            ">
+                <div style="
+                    font-family: 'Times New Roman', Times, serif;
+                    font-size: 26px;
+                    font-weight: bold;
+                    color: #2c3e50;
+                    text-align: left;
+                    flex: 1;
+                ">
+                    ${escapeHtml(pageHeading)}
+                </div>
+                <div class="block-actions">
+                    <button class="btn btn-download"
+                        onclick="downloadImageInModal(${pageNum}, ${index})"
+                        style="
+                            background: rgba(168, 85, 247, 0.18);
+                            color: grey;
+                            border: none;
+                            padding: 10px 16px;
+                            border-radius: 30px;
+                            cursor: pointer;
+                            font-weight: bold;
+                            font-size: 14px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 6px;
+                        ">
+                        ⬇️ Download .pptx
+                    </button>
+                </div>
+            </div>
+            
+            <div class="image-container" style="position: relative;">
+                <!-- Hidden iframe with close button -->
+                <div id="${iframeWrapperId}" 
+                    style="
+                        display:none;
+                        position: absolute;
+                        top:0;
+                        left:0;
+                        width:100%;
+                        height:100%;
+                        overflow:hidden;
+                        background: white;
+                        z-index: 100;
+                    ">
+                    <button 
+                        onclick="closeIframe(${pageNum})"
+                        style="
+                            position:absolute;
+                            top:10px;
+                            right:10px;
+                            z-index:1000;
+                            background:white;
+                            color:white;
+                            border:none;
+                            border-radius:50%;
+                            width:30px;
+                            height:30px;
+                            cursor:pointer;
+                            font-weight:bold;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            font-size:16px;
+                        ">✖</button>
+                    <iframe id="${iframeId}"
+                        style="
+                            width:100%;
+                            height:100%;
+                            border:none;
+                            overflow-y:auto;
+                            overflow-x:hidden;
+                        ">
+                    </iframe>
+                </div>
+                <img id="${imageId}" 
+                     src="${item.content}" 
+                     alt="${item.alt || 'Extracted image'}" 
+                     style="width:100%; border-radius: 0px; height: 400px; object-fit: contain; background:white;">
+            </div>
+
+            ${item.qrData ? `
+                <div class="text-content">
+                    <div class="qr-result">
+                        <div class="qr-result-label">🔍 QR Code Detected:</div>
+                        <div class="qr-result-data">${escapeHtml(item.qrData)}</div>
+                    </div>
+                </div>
+            ` : ''}
+        </div>
+    `;
+}
+
+function createDefinitionModalHTML(pageNum) {
+    return `
+        <div id="slide-definition-modal-${pageNum}" class="slide-definition-modal">
+            <div class="slide-definition-header">
+                <h3 id="slide-definition-title-${pageNum}" style="margin: 0; font-size: 18px; font-weight: 600;">Definition</h3>
+                <button onclick="closeSlideDefinition(${pageNum})" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer; line-height: 1;">×</button>
+            </div>
+            <div class="slide-definition-content">
+                <div id="slide-loading-indicator-${pageNum}" style="display: none; text-align: center; padding: 30px;">
+                    <div class="loading-spinner"></div>
+                    <p style="margin-top: 15px; color: #666;">Fetching definition...</p>
+                </div>
+                <div id="slide-definition-data-${pageNum}" style="display: none;">
+                    <div id="slide-definition-text-${pageNum}" style="font-size: 16px; line-height: 1.6; color: #333; margin-bottom: 20px;"></div>
+                    <div id="slide-synonyms-section-${pageNum}" style="display: none;">
+                        <h4 style="margin: 0 0 10px 0; color: #555; font-size: 16px;">Related Terms</h4>
+                        <div id="slide-synonyms-list-${pageNum}" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+                    </div>
+                </div>
+                <div id="slide-error-message-${pageNum}" style="display: none; padding: 15px; background: #fee; border-left: 4px solid #ff6b6b; color: #d63031;"></div>
+            </div>
+            <div class="slide-definition-footer">
+                <button onclick="closeSlideDefinition(${pageNum})" style="padding: 8px 20px; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">Close</button>
+            </div>
+        </div>
+    `;
+}
+
+// ============================================
+// SLIDE DEFINITION FUNCTIONS
+// ============================================
+
+async function showSlideDefinition(pageNum, word) {
+    console.log(`Showing definition for "${word}" in slide ${pageNum}`);
+    
+    const definitionModal = document.getElementById(`slide-definition-modal-${pageNum}`);
+    const loadingIndicator = document.getElementById(`slide-loading-indicator-${pageNum}`);
+    const definitionData = document.getElementById(`slide-definition-data-${pageNum}`);
+    const definitionTitle = document.getElementById(`slide-definition-title-${pageNum}`);
+    const definitionText = document.getElementById(`slide-definition-text-${pageNum}`);
+    const synonymsSection = document.getElementById(`slide-synonyms-section-${pageNum}`);
+    const synonymsList = document.getElementById(`slide-synonyms-list-${pageNum}`);
+    const errorMessage = document.getElementById(`slide-error-message-${pageNum}`);
+    
+    // Show modal
+    definitionModal.style.display = 'block';
+    
+    // Set title
+    definitionTitle.textContent = word;
+    
+    // Show loading state
+    loadingIndicator.style.display = 'block';
+    definitionData.style.display = 'none';
+    errorMessage.style.display = 'none';
+    synonymsSection.style.display = 'none';
+    
+    try {
+        // Check cache first
+        let definition;
+        if (definitionsCache[word]) {
+            definition = definitionsCache[word];
+        } else {
+            // Fetch definition using the existing function
+            definition = await fetchDefinitionWithFallback(word);
+            
+            if (!definition) {
+                throw new Error(`No definition found for "${word}" in FOLDOC or Wikipedia.`);
+            }
+            
+            // Cache the definition
+            definitionsCache[word] = definition;
+        }
+        
+        // Update definition text
+        definitionText.textContent = definition;
+        
+        // Show related computer science terms
+        try {
+            const csTerms = [
+                'algorithm', 'data structure', 'programming', 'software', 'hardware',
+                'network', 'database', 'security', 'encryption', 'compiler',
+                'operating system', 'memory', 'processor', 'cloud', 'web',
+                'protocol', 'interface', 'framework', 'library', 'API',
+                'binary', 'hexadecimal', 'cache', 'bandwidth', 'latency',
+                'virtualization', 'container', 'microservice', 'blockchain', 'cryptography'
+            ];
+            
+            // Find related terms
+            const wordLower = word.toLowerCase();
+            const relatedTerms = csTerms.filter(term => 
+                term.includes(wordLower) || 
+                wordLower.includes(term) ||
+                wordLower.split(' ').some(w => term.includes(w)) ||
+                term.split(' ').some(t => wordLower.includes(t))
+            );
+            
+            // If no direct matches, show some general CS terms
+            const displayTerms = relatedTerms.length > 0 ? 
+                relatedTerms.slice(0, 5) : 
+                ['algorithm', 'data structure', 'software', 'network', 'database'];
+            
+            synonymsList.innerHTML = '';
+            displayTerms.forEach(term => {
+                const relatedTag = document.createElement('span');
+                relatedTag.className = 'related-term-tag';
+                relatedTag.textContent = term;
+                relatedTag.onclick = () => {
+                    closeSlideDefinition(pageNum);
+                    setTimeout(() => showSlideDefinition(pageNum, term), 100);
+                };
+                synonymsList.appendChild(relatedTag);
+            });
+            
+            synonymsSection.style.display = 'block';
+            
+        } catch (synError) {
+            console.warn('Could not fetch related terms:', synError);
+            synonymsSection.style.display = 'none';
+        }
+        
+        // Show definition data
+        loadingIndicator.style.display = 'none';
+        definitionData.style.display = 'block';
+        
+    } catch (error) {
+        console.error('Error fetching definition:', error);
+        
+        // Show error message
+        loadingIndicator.style.display = 'none';
+        errorMessage.style.display = 'block';
+        errorMessage.textContent = error.message || `Could not fetch definition for "${word}". The term might not exist in FOLDOC or there might be a network issue.`;
+    }
+}
+
+function closeSlideDefinition(pageNum) {
+    const definitionModal = document.getElementById(`slide-definition-modal-${pageNum}`);
+    if (definitionModal) {
+        definitionModal.style.display = 'none';
+    }
+}
+
+// ============================================
+// MODAL CONTROL FUNCTIONS
+// ============================================
+
+function closeModal() {
+    const modal = document.getElementById('extracted-content-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function prevModalPage() {
+    if (modalCurrentPage > 1) {
+        modalCurrentPage--;
+        updateModalPosition();
+        updateModalNav();
+    }
+}
+
+function nextModalPage() {
+    if (modalCurrentPage < modalTotalPages) {
+        modalCurrentPage++;
+        updateModalPosition();
+        updateModalNav();
+    }
+}
+
+function updateModalPosition() {
+    const modalPagesContainer = document.getElementById('modal-pages-container');
+    if (modalPagesContainer) {
+        const offset = -(modalCurrentPage - 1) * 100;
+        modalPagesContainer.style.transform = `translateX(${offset}%)`;
+    }
+}
+
+function updateModalNav() {
+    const modalPageInfo = document.getElementById('modal-page-info');
+    const modalPrevBtn = document.getElementById('modal-prev-btn');
+    const modalNextBtn = document.getElementById('modal-next-btn');
+    
+    if (modalPageInfo) {
+        modalPageInfo.textContent = `Page ${modalCurrentPage} of ${modalTotalPages}`;
+    }
+    if (modalPrevBtn) {
+        modalPrevBtn.disabled = modalCurrentPage === 1;
+    }
+    if (modalNextBtn) {
+        modalNextBtn.disabled = modalCurrentPage === modalTotalPages;
+    }
+}
+
+// ============================================
+// BUTTON FUNCTIONS
+// ============================================
+
+function loadPCPDF() {
+    alert('PDF upload is disabled in this version. Content is extracted from the processed paragraph.');
+}
+
+function downloadImageInModal(pageNum, index) {
+    const image = extractedContent.find(item => 
+        item.type === 'image' && 
+        item.pageNumber === pageNum
+    );
+    
+    if (image) {
+        alert('Downloading .pptx file would start here.\nImage URL: ' + image.content);
+    }
+}
+
+function openNotesModal(pageNum) {
+    const pageTextBlocks = extractedContent.filter(item => 
+        item.pageNumber == pageNum && item.type === 'text'
+    );
+    
+    if (pageTextBlocks.length === 0) {
+        alert('No text content found for this page.');
+        return;
+    }
+    
+    const textBlock = pageTextBlocks[0];
+    const htmlContent = textBlock.htmlContent || textBlock.content;
+    const pageHeading = extractedHeadings[pageNum] || `Page ${pageNum}`;
+    
+    let notesModal = document.getElementById('NotesText');
+    
+    if (!notesModal) {
+        notesModal = document.createElement('div');
+        notesModal.id = 'NotesText';
+        notesModal.style.cssText = `
+            display: none;
+            position: fixed;
+            top: 1%;
+            left: 1%;
+            width: 48%;
+            height: 85%;
+            background:transparent;
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            border-top-left-radius: 30px;
+            overflow-y:hidden;
+        `;
+        document.body.appendChild(notesModal);
+    }
+    
+    notesModal.innerHTML = `
+        <div style="
+            background: white;
+            width: 100%;
+            max-height: 81%;
+            margin: auto;
+            padding: 20px;
+            border-radius: 8px;
+            position: relative;
+            overflow-y:hidden;
+             border-top-left-radius: 30px;
+        ">
+            <span onclick="closeNotesModal()"
+                  style="position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 26px; font-weight: bold; color: red;">
+                &times;
+            </span>
+            
+            <div style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #a855f7;">
+                <h2 style="margin: 0; color: #2c3e50; font-family: 'Times New Roman', Times, serif;">
+                    📝 Notes - ${escapeHtml(pageHeading)}
+                </h2>
+            </div>
+            
+            <div style="
+                font-family: 'Times New Roman', Times, serif;
+                font-size: 18px;
+                line-height: 1.6;
+                color: #333;
+                max-height: 500px;
+                overflow-y: auto;
+                padding: 15px;
+                background: white;
+                border-radius: 8px;
+                border-left: 4px solid #a855f7;
+            ">
+                ${htmlContent}
+            </div>
+            
+            <div style="text-align: right; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
+                <button onclick="closeNotesModal()"
+                        style="padding: 8px 20px; border: none; background: #a855f7; color: white; 
+                               cursor: pointer; border-radius: 4px; font-size: 16px; font-weight: bold;">
+                    Close
+                </button>
+            </div>
+        </div>
+    `;
+    
+    notesModal.style.display = 'flex';
+    notesModal.dataset.pageNum = pageNum;
+}
+
+function closeNotesModal() {
+    const notesModal = document.getElementById('NotesText');
+    if (notesModal) {
+        notesModal.style.display = 'none';
+    }
+}
+
+function closeIframe(pageNum = null) {
+    const pageToClose = pageNum || modalCurrentPage;
+    const iframeWrapperId = `iframe-wrapper-${pageToClose}`;
+    const imageId = `SlideImage-${pageToClose}`;
+    
+    const iframeWrapper = document.getElementById(iframeWrapperId);
+    const image = document.getElementById(imageId);
+
+    if (iframeWrapper && image) {
+        iframeWrapper.style.display = 'none';
+        image.style.display = 'block';
+    }
+}
+
+// ============================================
+// IFRAME FUNCTION
+// ============================================
+
+function showIframe(url) {
+    const modal = document.getElementById('extracted-content-modal');
+    if (!modal || !modal.classList.contains('active')) {
+        alert('Please open the modal first by extracting content.');
+        return;
+    }
+    
+    const modalPageInfo = document.getElementById('modal-page-info');
+    let currentPage = 1;
+    
+    if (modalPageInfo) {
+        const match = modalPageInfo.textContent.match(/Page (\d+) of/);
+        if (match) {
+            currentPage = parseInt(match[1]);
+        }
+    }
+    
+    const iframeWrapperId = `iframe-wrapper-${currentPage}`;
+    const iframeId = `SlideIframe-${currentPage}`;
+    const imageId = `SlideImage-${currentPage}`;
+    
+    const iframeWrapper = document.getElementById(iframeWrapperId);
+    const iframe = document.getElementById(iframeId);
+    const image = document.getElementById(imageId);
+
+    if (iframeWrapper && iframe && image) {
+        image.style.display = 'none';
+        iframeWrapper.style.display = 'block';
+        iframe.src = url;
+    }
+}
+
+// ============================================
+// DEFINITION FETCHING FUNCTIONS
+// ============================================
+
+async function fetchDefinitionWithFallback(keyword) {
+    let definition = await fetchDefinition(keyword);
+    
+    // If definition is too short or seems incomplete, try Wikipedia
+    if (!definition || definition.length < 40 || definition.split(' ').length < 8) {
+        try {
+            console.log(`Trying Wikipedia fallback for: ${keyword}`);
+            const wikiResponse = await fetch(
+                `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(keyword)}`,
+                { mode: 'cors' }
+            );
+            
+            if (wikiResponse.ok) {
+                const wikiData = await wikiResponse.json();
+                if (wikiData.extract && wikiData.type !== 'disambiguation') {
+                    const wikiDefinition = extractFirstSentence(wikiData.extract);
+                    if (wikiDefinition && wikiDefinition.length > 30) {
+                        console.log(`Using Wikipedia fallback for: ${keyword}`);
+                        return wikiDefinition;
+                    }
+                }
+            }
+        } catch (wikiError) {
+            console.log(`Wikipedia fallback failed for ${keyword}:`, wikiError.message);
+        }
+    }
+    
+    return definition;
+}
+
+async function fetchDefinition(keyword) {
+    try {
+        // Check cache first
+        if (definitionsCache[keyword]) {
+            return definitionsCache[keyword];
+        }
+        
+        console.log(`Fetching definition for: ${keyword}`);
+        
+        // Fetch definition from FOLDOC
+        const response = await fetch(`https://foldoc.org/${encodeURIComponent(keyword)}`, {
+            mode: 'cors',
+            headers: {
+                'Accept': 'text/html',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+        });
+        
+        if (!response.ok) {
+            console.log(`FOLDOC fetch error: ${response.status} for ${keyword}`);
+            return null;
+        }
+        
+        const htmlText = await response.text();
+        
+        // Clean the HTML text before parsing
+        let cleanedHtml = htmlText;
+        cleanedHtml = cleanedHtml.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+        cleanedHtml = cleanedHtml.replace(/<iframe\b[^>]*>.*?<\/iframe>/gi, '');
+        cleanedHtml = cleanedHtml.replace(/<div[^>]*class=[^>]*fb[^>]*>.*?<\/div>/gi, '');
+        cleanedHtml = cleanedHtml.replace(/fb:\w+/g, '');
+        cleanedHtml = cleanedHtml.replace(/<div[^>]*id=[^>]*facebook[^>]*>.*?<\/div>/gi, '');
+        cleanedHtml = cleanedHtml.replace(/connect\.facebook\.net/g, '');
+        
+        // Parse HTML to extract definition
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(cleanedHtml, 'text/html');
+        
+        const scripts = doc.querySelectorAll('script, iframe, link[rel="stylesheet"], style');
+        scripts.forEach(el => el.remove());
+        
+        let definition = null;
+        
+        // Method 1: Look for the definition in <pre> tags
+        const preElements = doc.querySelectorAll('pre');
+        for (const pre of preElements) {
+            const preText = pre.textContent.trim();
+            if (preText.length > 50 && !preText.toLowerCase().includes('search') && 
+                !preText.toLowerCase().includes('copyright')) {
+                definition = preText;
+                break;
+            }
+        }
+        
+        // Method 2: Look for definition paragraphs or table cells
+        if (!definition) {
+            const paragraphs = doc.querySelectorAll('p, td, li');
+            for (const element of paragraphs) {
+                const text = element.textContent.trim();
+                if (text.length > 100 && 
+                    text.toLowerCase().includes(keyword.toLowerCase()) &&
+                    !text.toLowerCase().includes('search') &&
+                    !text.toLowerCase().includes('copyright')) {
+                    definition = text;
+                    break;
+                }
+            }
+        }
+        
+        // Clean up the definition if found
+        if (definition) {
+            definition = definition
+                .replace(/^\s*(From The Free On-line Dictionary of Computing|Free On-line Dictionary of Computing)\s*/gi, '')
+                .replace(/\s*\[\d+\]\s*/g, ' ')
+                .replace(/\s*\([^)]*\)\s*/g, ' ')
+                .replace(/\s{2,}/g, ' ')
+                .trim();
+            
+            if (!definition.match(/[.!?]$/) && definition.length > 50) {
+                const sentences = definition.match(/[^.!?]+[.!?]+/g);
+                if (sentences && sentences.length > 0) {
+                    definition = sentences[0].trim();
+                } else {
+                    definition = definition + '.';
+                }
+            }
+            
+            // Check if definition is valid
+            if (isValidDefinition(definition)) {
+                definitionsCache[keyword] = definition;
+                console.log(`Found definition for "${keyword}": ${definition.substring(0, 100)}...`);
+                return definition;
+            }
+        }
+        
+        console.log(`No valid definition found for "${keyword}"`);
+        return null;
+        
+    } catch (error) {
+        console.error(`Error fetching definition for "${keyword}":`, error.message);
+        return null;
+    }
+}
+
+function isValidDefinition(definition) {
+    if (!definition) return false;
+    
+    const lowerDef = definition.toLowerCase();
+    const errorPatterns = [
+        'error:', 'could not fetch', 'no definition found', 'not found',
+        'page does not exist', 'does not have an article', 'may refer to:',
+        'not available', 'undefined', 'null', 'no results', 'search results'
+    ];
+    
+    const scriptPatterns = [
+        'connect.facebook.net', 'fb:like', 'facebook', 'twitter',
+        'social media', '<script', 'javascript:', 'js.src', '//connect.', 'fb-root'
+    ];
+    
+    for (const pattern of errorPatterns) {
+        if (lowerDef.includes(pattern)) return false;
+    }
+    
+    for (const pattern of scriptPatterns) {
+        if (lowerDef.includes(pattern)) return false;
+    }
+    
+    if (definition.length < 25) return false;
+    
+    if (definition.includes('{') || definition.includes('}') || 
+        definition.includes('"title":') || definition.includes('"extract":') ||
+        definition.includes('<iframe') || definition.includes('//connect.')) {
+        return false;
+    }
+    
+    if (definition.includes('http://') || definition.includes('https://') ||
+        definition.includes('.js') || definition.includes('.css')) {
+        return false;
+    }
+    
+    return true;
+}
+
+function extractFirstSentence(text) {
+    if (!text) return '';
+    
+    text = text.trim();
+    const sentences = text.match(/[^.!?]+[.!?]+/g);
+    
+    if (sentences && sentences.length > 0) {
+        for (let sentence of sentences) {
+            sentence = sentence.trim();
+            if (sentence.length > 30 && 
+                !sentence.toLowerCase().includes('see also') &&
+                !sentence.toLowerCase().includes('search') &&
+                !sentence.toLowerCase().includes('copyright')) {
+                return sentence;
+            }
+        }
+        return sentences[0].trim();
+    }
+    
+    const firstPeriod = text.indexOf('.');
+    const firstQuestion = text.indexOf('?');
+    const firstExclamation = text.indexOf('!');
+    const firstSemicolon = text.indexOf(';');
+    
+    const firstEnd = Math.min(
+        firstPeriod > 0 ? firstPeriod : Infinity,
+        firstQuestion > 0 ? firstQuestion : Infinity,
+        firstExclamation > 0 ? firstExclamation : Infinity,
+        firstSemicolon > 0 ? firstSemicolon : Infinity
+    );
+    
+    if (firstEnd < Infinity) {
+        return text.substring(0, firstEnd + 1).trim();
+    }
+    
+    if (text.length > 200) {
+        const truncated = text.substring(0, 197);
+        const lastSpace = truncated.lastIndexOf(' ');
+        if (lastSpace > 100) {
+            return truncated.substring(0, lastSpace) + '...';
+        }
+        return truncated + '...';
+    }
+    
+    return text;
+}
+
+// ============================================
+// KEYWORD PROCESSING FUNCTIONS (from second script)
+// ============================================
+
+function makeBold() {
+    document.execCommand('bold', false, null);
+    richTextInput.focus();
+}
+
+function removeFormatting() {
+    document.execCommand('removeFormat', false, null);
+    richTextInput.innerHTML = richTextInput.innerText;
+    richTextInput.focus();
+}
+
+function pasteExample() {
+    const example = `Computer Science is the study of <strong>algorithms</strong>, <strong>data structures</strong>, and <strong>computational systems</strong>. Key concepts include <strong>artificial intelligence</strong>, <strong>machine learning</strong>, and <strong>software engineering</strong>.`;
+    richTextInput.innerHTML = example;
+}
+
+async function loadDefaultDocx() {
+    try {
+        const sampleContent = `
+            
+        `;
+        
+        allContents.innerHTML = sampleContent;
+        currentFile.textContent = "";
+        richTextInput.innerHTML = sampleContent;
+        
+        showNotification("Default document loaded successfully!", "success");
+        
+    } catch (error) {
+        console.error("Error loading default DOCX:", error);
+        showNotification("Error loading default document. Using sample content instead.", "error");
+        
+        const fallbackContent = `<p><strong>Computer Science</strong> is the study of <strong>algorithms</strong>, <strong>data structures</strong>, and <strong>computational systems</strong>. Key concepts include <strong>artificial intelligence</strong>, <strong>machine learning</strong>, and <strong>software engineering</strong>.</p>`;
+        allContents.innerHTML = fallbackContent;
+        richTextInput.innerHTML = fallbackContent;
+        currentFile.textContent = "Loaded: Sample Content (Fallback)";
+    }
+}
+
+async function handleFileUpload(files) {
+    if (!files || files.length === 0) return;
+    
+    const file = files[0];
+    
+    if (!file.name.match(/\.(docx|doc)$/i)) {
+        showNotification("Please upload a DOCX or DOC file only.", "error");
+        return;
+    }
+    
+    try {
+        currentFile.textContent = `Loading: ${file.name}...`;
+        
+        const arrayBuffer = await file.arrayBuffer();
+        const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
+        const htmlContent = result.value;
+        
+        allContents.innerHTML = htmlContent;
+        currentFile.textContent = `Loaded: ${file.name}`;
+        
+        const plainText = result.value.replace(/<[^>]*>/g, ' ');
+        richTextInput.innerHTML = plainText;
+        
+        showNotification("Document uploaded and converted successfully!", "success");
+        
+    } catch (error) {
+        console.error("Error processing DOCX file:", error);
+        showNotification("Error processing document file. Please try again.", "error");
+        currentFile.textContent = "Error loading file";
+    }
+}
+
+function showNotification(message, type = "info") {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        z-index: 10000;
+        animation: slideIn 0.3s ease-out;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    `;
+    
+    if (type === "success") {
+        notification.style.background = "linear-gradient(135deg, #2ecc71, #27ae60)";
+    } else if (type === "error") {
+        notification.style.background = "linear-gradient(135deg, #e74c3c, #c0392b)";
+    } else {
+        notification.style.background = "linear-gradient(135deg, #3498db, #2980b9)";
+    }
+    
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = "slideOut 0.3s ease-out forwards";
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+function extractBoldText(htmlContent) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+    
+    const boldElements = tempDiv.querySelectorAll('b, strong, span[style*="bold"], span[style*="font-weight: bold"]');
+    const keywords = [];
+    
+    boldElements.forEach(el => {
+        const text = el.textContent.trim();
+        if (text && text.length > 1 && !keywords.includes(text)) {
+            keywords.push(text);
+        }
+    });
+    
+    const allElements = tempDiv.querySelectorAll('*');
+    allElements.forEach(el => {
+        const style = window.getComputedStyle ? 
+            window.getComputedStyle(el) : 
+            el.currentStyle;
+        
+        if (style.fontWeight === 'bold' || 
+            style.fontWeight === '700' || 
+            parseInt(style.fontWeight) >= 700) {
+            const text = el.textContent.trim();
+            if (text && text.length > 1 && !keywords.includes(text)) {
+                keywords.push(text);
+            }
+        }
+    });
+    
+    return keywords;
+}
+
+function createClickableKeywords(htmlContent) {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+    
+    const processNode = (node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+            const tagName = node.tagName.toLowerCase();
+            
+            if (tagName === 'b' || tagName === 'strong') {
+                const text = node.textContent.trim();
+                if (text) {
+                    const span = document.createElement('span');
+                    span.className = 'clickable-keyword';
+                    span.textContent = text;
+                    span.setAttribute('data-keyword', text);
+                    
+                    span.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const keyword = this.getAttribute('data-keyword');
+                        showDefinition(keyword);
+                    });
+                    
+                    node.parentNode.replaceChild(span, node);
+                    return span;
+                }
+            }
+            
+            const childNodes = Array.from(node.childNodes);
+            childNodes.forEach(child => processNode(child));
+        }
+    };
+    
+    const childNodes = Array.from(tempDiv.childNodes);
+    childNodes.forEach(child => processNode(child));
+    
+    return tempDiv.innerHTML;
+}
+
+function extractKeywordsFromContents() {
+    const htmlContent = allContents.innerHTML.trim();
+    
+    if (!htmlContent || htmlContent === '<br>' || htmlContent === '<div><br></div>') {
+        alert('Please load or upload a document first.');
+        return;
+    }
+    
+    keywords = [];
+    definitionsCache = {};
+    
+    keywords = extractBoldText(htmlContent);
+    
+    const processedHTML = createClickableKeywords(htmlContent);
+    
+    processedParagraph.innerHTML = processedHTML;
+    
+    setTimeout(() => {
+        const clickableKeywords = processedParagraph.querySelectorAll('.clickable-keyword');
+        clickableKeywords.forEach(keyword => {
+            keyword.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const keywordText = this.getAttribute('data-keyword') || this.textContent;
+                showDefinition(keywordText);
+            });
+        });
+    }, 10);
+    
+    const textContent = allContents.innerText || allContents.textContent;
+    const words = textContent.split(/\s+/).filter(word => word.length > 0);
+    wordCount.textContent = words.length;
+    charCount.textContent = textContent.length;
+    keywordCount.textContent = keywords.length;
+    
+    fetchAllBtn.disabled = keywords.length === 0;
+    
+    definitionsSummary.style.display = 'none';
+    
+    if (keywords.length === 0) {
+        processedParagraph.innerHTML += `
+            <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;">
+                <strong>No bold keywords detected in the document!</strong>
+                <p style="margin-top: 10px;">
+                    Make sure your document has <strong>bold formatting</strong>.
+                    <br>You can also add bold text manually in the document contents box.
+                </p>
+            </div>
+        `;
+    } else {
+        processedParagraph.insertAdjacentHTML('beforeend', `
+            <div style="margin-top: 20px; padding: 10px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; color: #155724;">
+                ✓ Successfully extracted <strong>${keywords.length}</strong> keyword(s) from document: 
+                ${keywords.slice(0, 5).map(k => `<span class="bold-indicator">${k}</span>`).join(' ')}
+                ${keywords.length > 5 ? '...' : ''}
+            </div>
+        `);
+    }
+    
+    processedParagraph.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function processParagraph() {
+    const htmlContent = richTextInput.innerHTML.trim();
+    
+    if (!htmlContent || htmlContent === '<br>' || htmlContent === '<div><br></div>') {
+        alert('Please enter or paste a paragraph.');
+        return;
+    }
+    
+    keywords = [];
+    definitionsCache = {};
+    
+    keywords = extractBoldText(htmlContent);
+    
+    const processedHTML = createClickableKeywords(htmlContent);
+    
+    processedParagraph.innerHTML = processedHTML;
+    
+    setTimeout(() => {
+        const clickableKeywords = processedParagraph.querySelectorAll('.clickable-keyword');
+        clickableKeywords.forEach(keyword => {
+            keyword.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const keywordText = this.getAttribute('data-keyword') || this.textContent;
+                showDefinition(keywordText);
+            });
+        });
+    }, 10);
+    
+    if (!processedHTML.includes('<p>') && !processedHTML.includes('<div>')) {
+        processedParagraph.innerHTML = `<p>${processedHTML}</p>`;
+    }
+    
+    const textContent = richTextInput.innerText || richTextInput.textContent;
+    const words = textContent.split(/\s+/).filter(word => word.length > 0);
+    wordCount.textContent = words.length;
+    charCount.textContent = textContent.length;
+    keywordCount.textContent = keywords.length;
+    
+    fetchAllBtn.disabled = keywords.length === 0;
+    
+    definitionsSummary.style.display = 'none';
+    
+    if (keywords.length === 0) {
+        processedParagraph.innerHTML += `
+            <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;">
+                <strong>No bold keywords detected!</strong>
+                <p style="margin-top: 10px;">
+                    Make sure your text has <strong>bold formatting</strong> (using <b>b</b> or <strong>strong</strong> tags).
+                    <br>You can use the <strong>Bold</strong> button above to format text.
+                </p>
+            </div>
+        `;
+    } else {
+        processedParagraph.insertAdjacentHTML('beforeend', `
+            <div style="margin-top: 20px; padding: 10px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 5px; color: #155724;">
+                ✓ Successfully extracted <strong>${keywords.length}</strong> keyword(s): 
+                ${keywords.slice(0, 5).map(k => `<span class="bold-indicator">${k}</span>`).join(' ')}
+                ${keywords.length > 5 ? '...' : ''}
+            </div>
+        `);
+    }
+}
+
+// ============================================
+// DEFINITION MODAL FUNCTIONS
+// ============================================
+
+async function showDefinition(word) {
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const definitionData = document.getElementById('definitionData');
+    const definitionTitle = document.getElementById('definitionTitle');
+    const definitionText = document.getElementById('definitionText');
+    const synonymsSection = document.getElementById('synonymsSection');
+    const synonymsList = document.getElementById('synonymsList');
+    const errorMessage = document.getElementById('errorMessage');
+    const definitionWindow = document.getElementById('definitionWindow');
+    const overlay = document.querySelector('.overlay');
+    
+    loadingIndicator.style.display = 'block';
+    definitionData.style.display = 'none';
+    errorMessage.style.display = 'none';
+    synonymsSection.style.display = 'none';
+    
+    definitionTitle.textContent = word;
+    
+    definitionWindow.style.display = 'block';
+    overlay.style.display = 'block';
+    
+    try {
+        let definition;
+        if (definitionsCache[word]) {
+            definition = definitionsCache[word];
+        } else {
+            definition = await fetchDefinitionWithFallback(word);
+            
+            if (!definition) {
+                throw new Error(`No definition found for "${word}" in FOLDOC or Wikipedia.`);
+            }
+            
+            definitionsCache[word] = definition;
+        }
+        
+        definitionText.textContent = definition;
+        
+        try {
+            const csTerms = [
+                'algorithm', 'data structure', 'programming', 'software', 'hardware',
+                'network', 'database', 'security', 'encryption', 'compiler',
+                'operating system', 'memory', 'processor', 'cloud', 'web',
+                'protocol', 'interface', 'framework', 'library', 'API',
+                'binary', 'hexadecimal', 'cache', 'bandwidth', 'latency',
+                'virtualization', 'container', 'microservice', 'blockchain', 'cryptography'
+            ];
+            
+            const wordLower = word.toLowerCase();
+            const relatedTerms = csTerms.filter(term => 
+                term.includes(wordLower) || 
+                wordLower.includes(term) ||
+                wordLower.split(' ').some(w => term.includes(w)) ||
+                term.split(' ').some(t => wordLower.includes(t))
+            );
+            
+            const displayTerms = relatedTerms.length > 0 ? 
+                relatedTerms.slice(0, 5) : 
+                ['algorithm', 'data structure', 'software', 'network', 'database'];
+            
+            synonymsList.innerHTML = '';
+            displayTerms.forEach(term => {
+                const relatedTag = document.createElement('span');
+                relatedTag.className = 'synonym-tag';
+                relatedTag.textContent = term;
+                relatedTag.style.cursor = 'pointer';
+                relatedTag.onclick = () => {
+                    closeDefinition();
+                    setTimeout(() => showDefinition(term), 100);
+                };
+                synonymsList.appendChild(relatedTag);
+            });
+            
+            synonymsSection.querySelector('h4').textContent = 'Related CS Terms';
+            synonymsSection.style.display = 'block';
+            
+        } catch (synError) {
+            console.warn('Could not fetch related terms:', synError);
+            synonymsSection.style.display = 'none';
+        }
+        
+        loadingIndicator.style.display = 'none';
+        definitionData.style.display = 'block';
+        
+    } catch (error) {
+        console.error('Error fetching definition:', error);
+        
+        loadingIndicator.style.display = 'none';
+        errorMessage.style.display = 'block';
+        errorMessage.textContent = error.message || `Could not fetch definition for "${word}". The term might not exist in FOLDOC or there might be a network issue.`;
+        errorMessage.innerHTML += `<br><br><small>Try: <a href="https://foldoc.org/${encodeURIComponent(word)}" target="_blank" rel="noopener noreferrer">Open FOLDOC page directly</a></small>`;
+    }
+}
+
+function closeDefinition() {
+    const definitionWindow = document.getElementById('definitionWindow');
+    const overlay = document.querySelector('.overlay');
+    if (definitionWindow) {
+        definitionWindow.style.display = 'none';
+    }
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
+}
+
+function closeDefinitionsSummary() {
+    definitionsSummary.style.display = 'none';
+}
+
+// ============================================
+// FETCH ALL DEFINITIONS
+// ============================================
+
+async function fetchAllDefinitions() {
+    if (keywords.length === 0) {
+        alert('No keywords to fetch. Please process a paragraph or document first.');
+        return;
+    }
+    
+    const fetchAllBtn = document.getElementById('fetchAllBtn');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    const definitionsList = document.getElementById('definitionsList');
+    const definitionsStats = document.getElementById('definitionsStats');
+    const definitionsSummary = document.getElementById('definitionsSummary');
+    
+    fetchAllBtn.disabled = true;
+    fetchAllBtn.innerHTML = '⏳ Fetching...';
+    progressContainer.style.display = 'block';
+    progressFill.style.width = '0%';
+    progressText.textContent = `Fetching definitions... 0/${keywords.length}`;
+    
+    definitionsList.innerHTML = '';
+    definitionsStats.innerHTML = '';
+    definitionsSummary.style.display = 'block';
+    
+    const successfulDefinitions = [];
+    const failedDefinitions = [];
+    
+    for (let i = 0; i < keywords.length; i++) {
+        const keyword = keywords[i];
+        
+        const progress = ((i + 1) / keywords.length) * 100;
+        progressFill.style.width = `${progress}%`;
+        progressText.textContent = `Fetching definitions... ${i + 1}/${keywords.length}`;
+        
+        const definition = await fetchDefinitionWithFallback(keyword);
+        
+        if (definition && isValidDefinition(definition)) {
+            const firstSentence = extractFirstSentence(definition);
+            
+            successfulDefinitions.push({ 
+                keyword, 
+                definition: firstSentence,
+                index: successfulDefinitions.length + 1
+            });
+            
+            const definitionItem = document.createElement('div');
+            definitionItem.className = 'definition-item';
+            definitionItem.innerHTML = `
+                <div class="definition-keyword">
+                    <span class="keyword-number">${successfulDefinitions.length}</span>
+                    ${keyword}
+                </div>
+                <div class="definition-text">${firstSentence}</div>
+            `;
+            definitionsList.appendChild(definitionItem);
+        } else {
+            failedDefinitions.push(keyword);
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    
+    progressFill.style.width = '100%';
+    
+    if (successfulDefinitions.length === 0) {
+        definitionsList.innerHTML = `
+            <div class="no-definitions-message">
+                <h3>📭 No Definitions Found</h3>
+                <p>Could not find definitions for any of the ${keywords.length} keywords.</p>
+                <p><em>Try clicking individual keywords to see if definitions exist.</em></p>
+                <p>Note: Some terms may not exist in FOLDOC or Wikipedia.</p>
+            </div>
+        `;
+        progressText.textContent = `No definitions found for ${keywords.length} keywords`;
+    } else {
+        progressText.textContent = `✓ Found ${successfulDefinitions.length}/${keywords.length} definitions`;
+        
+        definitionsStats.innerHTML = `
+            <div class="success-stats">
+                <div class="stat-badge">
+                    <span>✅</span>
+                    <span>Found: ${successfulDefinitions.length}</span>
+                </div>
+                <div class="stat-badge">
+                    <span>❌</span>
+                    <span>Missing: ${failedDefinitions.length}</span>
+                </div>
+                <div class="stat-badge">
+                    <span>📊</span>
+                    <span>Success rate: ${Math.round((successfulDefinitions.length / keywords.length) * 100)}%</span>
+                </div>
+            </div>
+        `;
+        
+        if (failedDefinitions.length > 0) {
+            definitionsStats.innerHTML += `
+                <div style="margin-top: 15px; padding: 10px; background: #fff3cd; border-radius: 8px; color: #856404;">
+                    <strong>Keywords without definitions:</strong>
+                    <div style="margin-top: 5px; font-size: 14px;">
+                        ${failedDefinitions.join(', ')}
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    setTimeout(() => {
+        fetchAllBtn.disabled = false;
+        fetchAllBtn.innerHTML = '📚 Fetch All Definitions';
+        progressContainer.style.display = 'none';
+    }, 1000);
+    
+    definitionsSummary.scrollIntoView({ behavior: 'smooth' });
+    
+    return successfulDefinitions;
+}
+
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function setSubject(subject) {
+    const buttons = document.querySelectorAll('.subject-btn');
+    buttons.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-subject') === subject) {
+            btn.classList.add('active');
+        }
+    });
+    
+    const subjectNames = {
+        'cs': 'Computer Science',
+        'general': 'General',
+        'biology': 'Biology',
+        'physics': 'Physics'
+    };
+    
+    document.getElementById('currentSubject').textContent = subjectNames[subject];
+}
+
+// ============================================
+// EVENT LISTENERS
+// ============================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Load example by default
+    pasteExample();
+    
+    // Autoload the default document
+    setTimeout(loadDefaultDocx, 100);
+    
+    // Process the example after a delay
+    setTimeout(() => {
+        processParagraph();
+        extractKeywordsFromContents();
+    }, 500);
+    
+    // Close definition window with Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeDefinition();
+        }
+    });
+    
+    // Close definition window when clicking outside
+    const overlay = document.querySelector('.overlay');
+    if (overlay) {
+        overlay.addEventListener('click', closeDefinition);
+    }
+    
+    // Add keyboard shortcuts
+    const richTextInput = document.getElementById('richTextInput');
+    if (richTextInput) {
+        richTextInput.addEventListener('keydown', (e) => {
+            // Ctrl+B for bold
+            if (e.ctrlKey && e.key === 'b') {
+                e.preventDefault();
+                makeBold();
+            }
+            
+            // Ctrl+Enter to process
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                processParagraph();
+            }
+        });
+    }
+    
+    // Add click handler for processed paragraph
+    const processedParagraph = document.getElementById('processedParagraph');
+    if (processedParagraph) {
+        processedParagraph.addEventListener('click', function(e) {
+            if (e.target.classList.contains('clickable-keyword')) {
+                e.preventDefault();
+                e.stopPropagation();
+                const keyword = e.target.getAttribute('data-keyword') || e.target.textContent;
+                showDefinition(keyword);
+            }
+        });
+    }
+    
+    // Add paste event listener
+    if (richTextInput) {
+        richTextInput.addEventListener('paste', function(e) {
+            e.preventDefault();
+            
+            const pastedContent = e.clipboardData.getData('text/html') || 
+                                 e.clipboardData.getData('text/plain');
+            
+            const selection = window.getSelection();
+            if (!selection.rangeCount) return;
+            
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
+            
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = pastedContent;
+            
+            if (!pastedContent.includes('<') || pastedContent === tempDiv.textContent) {
+                const textNode = document.createTextNode(pastedContent);
+                range.insertNode(textNode);
+            } else {
+                const fragment = range.createContextualFragment(pastedContent);
+                range.insertNode(fragment);
+            }
+            
+            range.collapse(false);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        });
+    }
+    
+    // Initialize the app
+    initializeApp();
+});
+
+// ============================================
+// INITIALIZE
+// ============================================
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+    initializeApp();
+}
+    </script>
 <script>
-function showIframe(videoUrl) {
-    const iframe = document.getElementById("lessonIframe");
+function ExtractPPT(slidesData) {
+    const pptx = new PptxGenJS();
 
-    // Ensure autoplay is always added
-    if (!videoUrl.includes("autoplay")) {
-        videoUrl += (videoUrl.includes("?") ? "&" : "?") + "autoplay=1";
+    // Set custom slide size: 16 x 6 inches
+    pptx.defineLayout({ name: "Custom16x6", width: 16, height: 6 });
+    pptx.layout = "Custom16x6";
+
+    const today = new Date();
+    const dateStr = today.toLocaleDateString(); // e.g., "1/23/2026"
+
+    slidesData.forEach((slideItem, index) => {
+        const slide = pptx.addSlide();
+
+        // --- Top Heading Shape ---
+        if (slideItem.heading) {
+            slide.addText(slideItem.heading, {
+                x: 0.0, y: 0.0, w: 7.0, h: 0.7,
+                fontSize: 28,
+                bold: true,
+                color: "2c3e50",
+                valign: "middle",
+                align: "center",
+                fill: { color: "DDA0F7" }, // light purple
+                margin: 0.1,
+                borderRadius: 4
+            });
+        }
+
+        // --- Left Column Background Shape (DDA0F7, NO LINE) ---
+        slide.addShape(pptx.shapes.RECTANGLE, {  // plain rectangle
+            x: 0.8, y: 0.7, w: 6.2, h: 5.0,
+            fill: { color: "DDA0F7" }, // purple background
+            line: null                 // no border line
+        });
+
+        // --- Left Column Text ---
+        slide.addText(slideItem.text || "No text available", {
+            x: 0.2, y: 0.7, w: 6.5, h: 4.9,
+            fontSize: 22,
+            color: "363636",
+            valign: "top",
+            align: "justify",
+            margin: 0.1,
+            bold: true,
+            fill: { color: "FFFFFF" },
+            shape: pptx.shapes.ROUNDED_RECTANGLE
+        });
+
+        // --- Right Column Image ---
+        if (slideItem.image) {
+            slide.addImage({
+                x: 7, y: 0.0, w: 9, h: 6.0,
+                data: slideItem.image
+            });
+        }
+
+        // --- Bottom Footer Shape with Date & Slide Number ---
+        slide.addText(`Date: ${dateStr}   |   Slide: ${index + 1}`, {
+            x: 0.0, y: 5.6, w: 7.0, h: 0.4,
+            fontSize: 18,
+            bold: true,
+            color: "2c3e50",
+            valign: "middle",
+            align: "center",
+            fill: { color: "DDA0F7" }, // same light purple
+            margin: 0.1,
+            borderRadius: 4
+        });
+    });
+
+    pptx.writeFile("GeneratedSlides.pptx");
+}
+
+function downloadImageInModal(pageNum, index) {
+    const slidesData = [];
+    
+    // Only select elements inside the modal
+    const modal = document.getElementById("extracted-content-modal");
+    const textBlocks = modal.querySelectorAll(".text-block");
+    const imageBlocks = modal.querySelectorAll(".image-block");
+    
+    // The modal should have equal number of text and image blocks (one per page)
+    const totalSlides = Math.min(textBlocks.length, imageBlocks.length);
+    
+    for (let i = 0; i < totalSlides; i++) {
+        const textDiv = textBlocks[i];
+        const imageDiv = imageBlocks[i];
+        
+        let heading = "";
+        
+        // Find the div that contains the actual heading text (flex:1)
+        const headingDiv = textDiv?.querySelector("div[style*='flex: 1']") || null;
+        if (headingDiv) {
+            heading = headingDiv.innerText.trim(); // Only heading text, no icons
+        }
+        
+        // Get the 3 sentences text content
+        const textContent = textDiv?.querySelector(".text-content")?.innerText || "";
+        const imageSrc = imageDiv?.querySelector("img")?.src || null;
+        
+        // Only add slide if we have heading (which we should for each page)
+        if (heading) {
+            slidesData.push({
+                heading: heading,
+                text: textContent,
+                image: imageSrc
+            });
+        }
     }
 
-    iframe.src = videoUrl;
-    iframe.style.display = "block";
+    // Generate PPTX
+    if (slidesData.length > 0) {
+        ExtractPPT(slidesData);
+    } else {
+        alert("No slides to download!");
+    }
 }
 </script>
+<script>
+// Main function that will be called when button is clicked
+function transferAndFormatContentFinal() {
+    console.log("Starting content transfer...");
+    
+    const sourceDiv = document.getElementById('processedParagraph');
+    const destDiv = document.getElementById('QuizGeneratorCleanContent');
+    
+    if (!sourceDiv) {
+        console.error('Source element (#processedParagraph) not found');
+        return;
+    }
+    
+    if (!destDiv) {
+        console.error('Destination element (#QuizGeneratorCleanContent) not found');
+        return;
+    }
+    
+    console.log("Found source and destination elements");
+    
+    // Clear destination
+    destDiv.innerHTML = '';
+    
+    // Get all elements from source
+    const elements = Array.from(sourceDiv.children);
+    console.log(`Found ${elements.length} elements in source`);
+    
+    // Headings to exclude (case insensitive)
+    const excludeHeadings = ['lesson plan', 'starter', 'introduction', 'lesson objectives', 'summary', 'lab', 'lesson summary', 'uses', 'example'];
+    
+    // Patterns to exclude from content
+    const excludeContentPatterns = [
+        /^step\s*\d+/i,
+        /^task:/i,
+        /^example:/i,
+        /^for example/i,
+        /^activity:/i,
+        /^lab-/i,
+        /^exercise:/i,
+        /^\d+\.\s*$/,  // Just a number
+        /^[a-z]\.\s*$/i,  // Just a letter
+        /^[-•*]\s+/i,  // Bullet points
+        /^\(\d+\)/,  // Number in parentheses
+        /^\[\d+\]/,  // Number in brackets
+    ];
+    
+    let headingTag = 'A'.charCodeAt(0); // Start with 'A'
+    let currentHeading = null;
+    let inExcludedSection = false;
+    let sentenceNumber = 1;
+    
+    for (let element of elements) {
+        const tagName = element.tagName.toLowerCase();
+        const elementText = element.textContent.trim();
+        
+        // Skip empty elements or placeholders
+        if (!elementText || element.classList.contains('placeholder')) {
+            continue;
+        }
+        
+        // Skip images
+        if (tagName === 'img' || element.querySelector('img')) {
+            continue;
+        }
+        
+        console.log(`Processing element: ${tagName} - "${elementText.substring(0, 50)}..."`);
+        
+        // Handle headings (h1 to h6)
+        if (tagName.match(/^h[1-6]$/)) {
+            console.log("Found heading:", elementText);
+            
+            // Clean heading - remove ALL numbers and dots at the beginning
+            const cleanHeading = elementText
+                .replace(/^[\d\.\s:#]+/, '')  // Remove numbers, dots, spaces, colons, hashes at start
+                .replace(/\s+/g, ' ')  // Normalize spaces
+                .trim();
+            
+            console.log("Cleaned heading:", cleanHeading);
+            
+            // Check if this heading should be excluded
+            const shouldExclude = excludeHeadings.some(exclude => 
+                cleanHeading.toLowerCase().includes(exclude.toLowerCase())
+            ) || /^(#?\d+\.)+\d*$/i.test(elementText); // Also exclude pure number headings
+            
+            if (shouldExclude || !cleanHeading) {
+                console.log("Excluding heading section:", cleanHeading);
+                currentHeading = null;
+                inExcludedSection = true;
+                continue;
+            }
+            
+            // Valid heading found
+            currentHeading = cleanHeading;
+            inExcludedSection = false;
+            const tagChar = String.fromCharCode(headingTag);
+            
+            // Add heading to destination
+            const headingElement = document.createElement('p');
+            headingElement.innerHTML = `<strong>#${tagChar}: ${cleanHeading}</strong>`;
+            destDiv.appendChild(headingElement);
+            
+            console.log(`Added heading: #${tagChar}: ${cleanHeading}`);
+            
+            headingTag++;
+            sentenceNumber = 1; // Reset sentence counter for new section
+            continue;
+        }
+        
+        // Handle paragraphs (only if we have a valid heading and not in excluded section)
+        if (tagName === 'p' && currentHeading && !inExcludedSection) {
+            console.log("Processing paragraph under heading:", currentHeading);
+            
+            // Get the full HTML with formatting
+            const originalHTML = element.innerHTML;
+            
+            // Skip if paragraph is too short or looks like a fragment
+            if (elementText.length < 10) {
+                console.log("Skipping short paragraph:", elementText);
+                continue;
+            }
+            
+            // Check if this paragraph looks like instructions/steps
+            const isInstruction = excludeContentPatterns.some(pattern => 
+                pattern.test(elementText.toLowerCase())
+            ) || elementText.toLowerCase().includes('right-click') 
+              || elementText.toLowerCase().includes('click ok')
+              || elementText.toLowerCase().includes('select files')
+              || elementText.toLowerCase().includes('choose format')
+              || elementText.toLowerCase().includes('set compression')
+              || elementText.toLowerCase().includes('confirm');
+            
+            if (isInstruction) {
+                console.log("Skipping instruction paragraph:", elementText.substring(0, 50));
+                continue;
+            }
+            
+            // Split paragraph into sentences while preserving HTML formatting
+            const sentences = extractSentencesWithHTML(originalHTML);
+            console.log(`Found ${sentences.length} sentences in paragraph`);
+            
+            for (let i = 0; i < sentences.length; i++) {
+                const sentenceData = sentences[i];
+                const sentenceText = sentenceData.text.trim();
+                const sentenceHTML = sentenceData.html.trim();
+                
+                if (!sentenceText || sentenceText.length < 15) {
+                    console.log("Skipping short sentence:", sentenceText);
+                    continue;
+                }
+                
+                // Skip if sentence looks like a fragment or instruction
+                const wordCount = sentenceText.split(' ').length;
+                const isFragment = wordCount < 5;
+                const looksLikeInstruction = /^(choose|select|click|press|enter|type|save|open|close|drag|drop|highlight|pick)/i.test(sentenceText);
+                const isTechnicalFragment = /^\.[a-z]{2,4}\s*$/i.test(sentenceText) || sentenceText === '...';
+                
+                if (isFragment || looksLikeInstruction || isTechnicalFragment) {
+                    console.log("Skipping fragment/instruction:", sentenceText);
+                    continue;
+                }
+                
+                // Valid sentence - add to output
+                const sentenceElement = document.createElement('p');
+                sentenceElement.innerHTML = `<strong>${sentenceNumber}.</strong> ${sentenceHTML}`;
+                destDiv.appendChild(sentenceElement);
+                
+                console.log(`Added sentence ${sentenceNumber}: ${sentenceText.substring(0, 50)}...`);
+                sentenceNumber++;
+            }
+        }
+    }
+    
+    // Final cleanup of the output
+    cleanupOutputContent(destDiv);
+    
+    console.log(`Transfer complete. Added ${destDiv.children.length} elements to destination.`);
+    
+    if (destDiv.children.length === 0) {
+        destDiv.innerHTML = '<p class="placeholder">Processed paragraph will appear here...</p>';
+        console.log("No content transferred, added placeholder");
+    }
+}
+
+// Function to extract sentences from HTML while preserving formatting
+function extractSentencesWithHTML(html) {
+    const sentences = [];
+    
+    // Create temporary container
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    
+    // Remove any images
+    tempDiv.querySelectorAll('img').forEach(img => img.remove());
+    
+    // Get text content for sentence boundaries
+    const fullText = tempDiv.textContent;
+    
+    // Find sentence boundaries
+    const sentenceBoundaries = [];
+    const sentenceRegex = /[.!?]+/g;
+    let match;
+    
+    while ((match = sentenceRegex.exec(fullText)) !== null) {
+        sentenceBoundaries.push(match.index + match[0].length);
+    }
+    
+    // If no sentence boundaries, return whole text as one sentence
+    if (sentenceBoundaries.length === 0) {
+        return [{
+            text: fullText.trim(),
+            html: tempDiv.innerHTML.trim()
+        }];
+    }
+    
+    // Extract each sentence with HTML
+    let currentPos = 0;
+    
+    for (let i = 0; i < sentenceBoundaries.length; i++) {
+        const endPos = sentenceBoundaries[i];
+        const sentenceText = fullText.substring(currentPos, endPos).trim();
+        
+        if (sentenceText) {
+            // Extract HTML for this sentence
+            const sentenceHTML = extractHTMLForRange(tempDiv, currentPos, endPos);
+            
+            sentences.push({
+                text: sentenceText,
+                html: sentenceHTML
+            });
+        }
+        
+        currentPos = endPos;
+    }
+    
+    // Check for any remaining text
+    if (currentPos < fullText.length) {
+        const remainingText = fullText.substring(currentPos).trim();
+        if (remainingText) {
+            const remainingHTML = extractHTMLForRange(tempDiv, currentPos, fullText.length);
+            sentences.push({
+                text: remainingText,
+                html: remainingHTML
+            });
+        }
+    }
+    
+    return sentences;
+}
+
+// Function to extract HTML for a specific text range
+function extractHTMLForRange(container, startIndex, endIndex) {
+    const range = document.createRange();
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+    
+    let node;
+    let pos = 0;
+    let startNode = null, endNode = null;
+    let startOffset = 0, endOffset = 0;
+    
+    // Find start node and offset
+    while (node = walker.nextNode()) {
+        const nodeText = node.textContent;
+        const nodeLength = nodeText.length;
+        
+        if (pos + nodeLength > startIndex) {
+            startNode = node;
+            startOffset = startIndex - pos;
+            break;
+        }
+        pos += nodeLength;
+    }
+    
+    // Reset walker and find end node and offset
+    walker.currentNode = container;
+    pos = 0;
+    while (node = walker.nextNode()) {
+        const nodeText = node.textContent;
+        const nodeLength = nodeText.length;
+        
+        if (pos + nodeLength >= endIndex) {
+            endNode = node;
+            endOffset = endIndex - pos;
+            break;
+        }
+        pos += nodeLength;
+    }
+    
+    // If we found both nodes, extract the range
+    if (startNode && endNode) {
+        range.setStart(startNode, startOffset);
+        range.setEnd(endNode, endOffset);
+        
+        const fragment = range.cloneContents();
+        const tempContainer = document.createElement('div');
+        tempContainer.appendChild(fragment);
+        
+        return tempContainer.innerHTML.trim();
+    }
+    
+    // Fallback: return plain text
+    return container.textContent.substring(startIndex, endIndex).trim();
+}
+
+// Function to clean up the output content
+function cleanupOutputContent(container) {
+    const children = Array.from(container.children);
+    let currentNumber = 1;
+    let isNewSection = false;
+    const cleanedChildren = [];
+    
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        const html = child.innerHTML;
+        const text = child.textContent.trim();
+        
+        // Check if this is a heading
+        if (html.includes('#') && html.includes(':')) {
+            isNewSection = true;
+            cleanedChildren.push(child);
+            currentNumber = 1;
+            continue;
+        }
+        
+        // Skip if it's not a paragraph with content
+        if (child.tagName !== 'P' || !text) {
+            continue;
+        }
+        
+        // Skip very short items
+        if (text.length < 20) {
+            continue;
+        }
+        
+        // Skip items that look like fragments
+        if (text.split(' ').length < 4) {
+            continue;
+        }
+        
+        // Skip items with file extensions as main content
+        if (/\.[a-z]{2,4}\s*$/i.test(text) && text.split(' ').length < 3) {
+            continue;
+        }
+        
+        // Fix the numbering
+        const newHTML = html.replace(/<strong>\d+\.<\/strong>/, `<strong>${currentNumber}.</strong>`);
+        child.innerHTML = newHTML;
+        
+        cleanedChildren.push(child);
+        currentNumber++;
+        isNewSection = false;
+    }
+    
+    // Replace container content with cleaned children
+    container.innerHTML = '';
+    cleanedChildren.forEach(child => container.appendChild(child));
+    
+    console.log(`After cleanup: ${container.children.length} items remaining`);
+}
+
+// Function to initialize the button click handler
+function initializeTransferButton() {
+    console.log("Initializing transfer button...");
+    
+    const button = document.getElementById('general-extract-btn');
+    
+    if (!button) {
+        console.error('Button with id "general-extract-btn" not found');
+        
+        // Try alternative selector
+        const altButton = document.querySelector('.btn-view-extracted');
+        if (altButton) {
+            console.log("Found button with class 'btn-view-extracted'");
+            setupButtonHandler(altButton);
+        }
+        return;
+    }
+    
+    console.log("Found button with id 'general-extract-btn'");
+    setupButtonHandler(button);
+}
+
+// Function to setup button click handler
+function setupButtonHandler(button) {
+    // Save the original onclick handler if it exists
+    const originalOnclick = button.onclick;
+    
+    // Create new click handler
+    button.onclick = function(event) {
+        console.log("Button clicked!");
+        
+        // Call the original function if it exists
+        if (typeof window.extractGeneralPDF === 'function') {
+            console.log("Calling original extractGeneralPDF function...");
+            try {
+                window.extractGeneralPDF();
+            } catch (err) {
+                console.error("Error calling extractGeneralPDF:", err);
+            }
+        } else if (originalOnclick) {
+            console.log("Calling original onclick handler...");
+            try {
+                originalOnclick.call(this, event);
+            } catch (err) {
+                console.error("Error calling original onclick:", err);
+            }
+        }
+        
+        // Wait a bit for content to load, then transfer
+        console.log("Setting up transfer in 500ms...");
+        setTimeout(function() {
+            console.log("Executing transferAndFormatContentFinal...");
+            try {
+                transferAndFormatContentFinal();
+            } catch (err) {
+                console.error("Error in transferAndFormatContentFinal:", err);
+            }
+        }, 500);
+    };
+    
+    console.log("Button handler setup complete");
+}
+
+// Function to check if DOM is ready
+function checkDOMReady() {
+    console.log("Checking DOM ready state...");
+    
+    if (document.readyState === 'loading') {
+        console.log("DOM still loading, waiting...");
+        document.addEventListener('DOMContentLoaded', initializeTransferButton);
+    } else {
+        console.log("DOM already loaded, initializing button...");
+        initializeTransferButton();
+    }
+}
+
+// Alternative initialization - try immediately and also on load
+console.log("Content transfer script loading...");
+
+// Try to initialize immediately
+try {
+    initializeTransferButton();
+} catch (err) {
+    console.log("Initialization failed, will retry on DOM ready:", err);
+}
+
+// Also set up for DOM ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("DOM fully loaded, initializing button...");
+        initializeTransferButton();
+    });
+}
+
+// Export functions to global scope for manual testing
+window.transferAndFormatContentFinal = transferAndFormatContentFinal;
+window.initializeTransferButton = initializeTransferButton;
+
+console.log("Content transfer script loaded successfully");
+
+</script>
+</body>
+</html>
